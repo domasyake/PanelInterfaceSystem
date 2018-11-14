@@ -5,12 +5,12 @@ namespace Example{
 	public class Changer : BasePanelsController{
 		public Vector2 startPoint;
 		public ListCreateOption listCreateOption;
-		public PanelEventSystem panelEventSystem;
+		public PanelEventSystem panelES;
 		public Changer2 changer2;
 		
 		private void Start(){
-			Init<SamplePanel>(panelEventSystem);
-			panelEventSystem.SetLoopAble = true;
+			Init<SamplePanel>(panelES);
+			panelES.SetLoopAble = true;
 			base.Launch(startPoint);
 		}
 
@@ -26,7 +26,7 @@ namespace Example{
 			changer2.Run();
 		}
 
-		protected override void CreateList(){
+		protected override void ActivatePanels(){
 			panelEventSystem.CreateActivePanelsList<SamplePanel>(listCreateOption);
 		}
 

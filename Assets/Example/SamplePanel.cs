@@ -5,12 +5,11 @@ using UnityEngine.UI;
 namespace Example{
 	public class SamplePanel:MonoBehaviour,ISelectablePanel{
 		private Image img;
+		public bool IsActive{ get; set; }
 
 		private void Awake(){
 			img = this.GetComponent<Image>();
 		}
-
-		public bool IsActive{ get; set; }
 		
 		public void OnSelect(){
 			img.color=Color.blue;

@@ -5,10 +5,10 @@ namespace Example{
 	public class SampleControll : BasePanelsController{
 		public Vector2 startPoint;
 		public ListCreateOption listCreateOption;
-		public PanelEventSystem panelEventSystem;
+		public PanelEventSystem panelES;
 		
 		private void Start(){
-			Init<SamplePanel>(panelEventSystem);
+			Init<SamplePanel>(panelES);
 			
 			base.Launch(startPoint);
 		}
@@ -24,7 +24,12 @@ namespace Example{
 			Debug.Log("Controller selected-" + panel.name);
 		}
 		
-		protected override void CreateList(){
+		protected override void CheckCursoleOver(CursoleOver cursole_over){
+			Debug.Log("CursoleOver-"+cursole_over);
+		}
+
+		
+		protected override void ActivatePanels(){
 			panelEventSystem.CreateActivePanelsList<SamplePanel>(listCreateOption);
 		}
 

@@ -23,8 +23,12 @@ namespace Example{
 			Debug.Log("Controller selected-" + panel.name);
 		}
 
-		protected override void CreateList(){
+		protected override void ActivatePanels(){
 			panelEventSystem.CreateActivePanelsList<SamplePanel>(structure);
+		}
+
+		protected override void CheckCursoleOver(CursoleOver cursole_over){
+			Debug.Log("CursoleOver-"+cursole_over);
 		}
 
 		public void Run(){

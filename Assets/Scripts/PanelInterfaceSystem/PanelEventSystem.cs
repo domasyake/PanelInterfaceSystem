@@ -72,6 +72,9 @@ namespace PanelInterfaceSystem{
 		/// <param name="structure">This creates a selection range.</param>
 		/// <typeparam name="TYpe">Type of panel to activate.</typeparam>
 		public void CreateActivePanelsList<TYpe>(int[] structure)where TYpe : ISelectablePanel{
+			foreach (var item in activeIselectables){
+				foreach (var jtem in item){ jtem.IsActive = false; }
+			}
 			activeIselectables.Clear();
 
 			//Activate panels of type of argument that inherits ISelectablePanel
@@ -80,8 +83,6 @@ namespace PanelInterfaceSystem{
 				if (item is TYpe){
 					item.IsActive = true;
 					target_selectables.Add(item);
-				}else{
-					item.IsActive = false;
 				}
 			}
 			
@@ -151,6 +152,7 @@ namespace PanelInterfaceSystem{
 		/// </summary>
 		public void ReBoot(){
 			isActive = true;
+			Select(selectedPoint);
 		}
 		
 		/// <summary>
@@ -202,7 +204,14 @@ namespace PanelInterfaceSystem{
 				target.OnSelect();
 				focusStream.OnNext(target);
 			}catch (ArgumentOutOfRangeException e){
-				Debug.Log(e);
+				Debug.Log(e+" on select process.");
+				try{ 
+					var target = activeIselectables[0][0];
+					target.OnSelect();
+					focusStream.OnNext(target);
+				} catch (Exception exception){
+					Debug.Log(e+" on select process.");
+				}
 			}
 		}
 
@@ -210,36 +219,43 @@ namespace PanelInterfaceSystem{
 			if (!isActive){
 				return;
 			}
-			activeIselectables[(int) selectedPoint.y][(int) selectedPoint.x].RemoveSelect();
+
+			try{
+				activeIselectables[(int) selectedPoint.y][(int) selectedPoint.x].RemoveSelect();
+			} catch (Exception e){
+				Debug.Log(e+" on remove select process.");
+			}
 			
 			selectedPoint+=movement;
 			
 			if (selectedPoint.y < 0){
+				overStream.OnNext(CursoleOver.Top);
 				if (loopAble){
 					selectedPoint.y = activeIselectables.Count - 1;
 				} else{
-					overStream.OnNext(CursoleOver.Top);
 					selectedPoint.y = 0;
 				}
 			}else if (selectedPoint.y > activeIselectables.Count - 1){
+				overStream.OnNext(CursoleOver.Under);
 				if (loopAble){
 					selectedPoint.y = 0; 
 				}else{
-					overStream.OnNext(CursoleOver.Under);
 					selectedPoint.y = activeIselectables.Count-1;	
 				}
 			}
 
 			if (selectedPoint.x < 0){
+				overStream.OnNext(CursoleOver.Left);
 				if (loopAble){
 					selectedPoint.x = activeIselectables[(int) selectedPoint.y].Count - 1;
 				} else{
-					overStream.OnNext(CursoleOver.Left);
 					selectedPoint.x = 0;
 				}
 			}else if (selectedPoint.x > activeIselectables[(int) selectedPoint.y].Count - 1){
-				if (loopAble){ selectedPoint.x = 0; } else{
-					overStream.OnNext(CursoleOver.Right);
+				overStream.OnNext(CursoleOver.Right);
+				if (loopAble){
+					selectedPoint.x = 0;
+				} else{
 					selectedPoint.x = activeIselectables[(int) selectedPoint.y].Count - 1;
 				}
 			}
